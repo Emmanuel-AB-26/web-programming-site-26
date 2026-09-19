@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="EN-US">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width", initial-scale="1.0"/>
-        <title>Internet History Web Page</title>
-    </head>
-
-    <body>
-        <header>
-            <h1>The History of the Internet</h1>
-            <p>The following webpage presents the major milestones which shaped the Internet History</p>
-        </header>
-
-        <nav>
+{%extends "base.html"%}
+{%block title%}Internet History Web Page{%endblock%}
+{%block headerTitle%}The History of the Internet{%endblock%}
+{%block headerParagraph%}The following webpage presents the major milestones which shaped the Internet History{%endblock%}
+{%block navigation%}
             <h2>Navigation Window</h2>
             <p><a href="#1958-1968">First Phase</a></p>
             <p><a href="#1971-1978">Second Phase</a></p>
@@ -22,8 +12,8 @@
             <p><a href="#2010-Present Day">Sixth Phase</a></p>
             <p><a href="#Three Key Technologies">Three Key Technologies</a></p>
             <p><a href="#References">References</a></p>
-        </nav>
-
+{%endblock%}
+{%block content%}
         <main>
             <section id="1958-1968">
             <h2>First Phase: 1958-1968</h2>
@@ -165,11 +155,4 @@
             </section>
 
         </main>
-
-        <footer>
-            <p>Web Programming — built with Flask and deployed on Render.</p>
-            <p>This website is created for educational purposes only, as part of the GIN446 - Web Programming course, School of Engineering, USEK. (Fall 2026-2027)</p>
-        </footer>
-
-    </body>
-</html>
+{%endblock%}

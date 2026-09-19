@@ -1,26 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>History of the Web</title>
-</head>
-<body>
-
-<header>
-  <h1>History of the Web</h1>
-  <p>A timeline of key events in the development of the World Wide Web.</p>
-  <nav>
+{%extends "base.html"%}
+{%block title%}History of the Web{%endblock%}
+{%block headerTitle%}History of the Web{%endblock%}
+{%block headerParagraph%}A timeline of key events in the development of the World Wide Web.{%endblock%}
+{%block navigation%}
     <ul>
       <li><a href="#timeline">Timeline</a></li>
       <li><a href="#technologies">Key Technologies</a></li>
       <li><a href="#references">References</a></li>
     </ul>
-  </nav>
-</header>
-
+{%endblock%}
+{%block content%}
 <main>
-
 <section id="timeline">
 
   <article>
@@ -152,11 +142,4 @@
 </section>
 
 </main>
-
-<footer>
-  <p>Web Programming — built with Flask and deployed on Render.</p>
-  <p>This website is created for educational purposes only, as part of the GIN446 - Web Programming course, School of Engineering, USEK. (Fall 2026-2027)</p>
-</footer>
-
-</body>
-</html>
+{%endblock%}

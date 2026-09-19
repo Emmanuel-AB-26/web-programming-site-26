@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>History of the Internet</title>
-</head>
-<body>
-
-<header>
-  <h1>History of the Internet</h1>
-  <p>A timeline of key events in the development of the internet.</p>
-  <nav>
+{%extends "base.html"%}
+{%block title%}History of the Internet{%endblock%}
+{%block headerTitle%}History of the Internet{%endblock%}
+{%block headerParagraph%}A timeline of key events in the development of the internet.{%endblock%}
+{%block navigation%}
     <ul>
       <li><a href="#timeline">Timeline</a></li>
       <li><a href="#technologies">Key Technologies</a></li>
       <li><a href="#references">References</a></li>
     </ul>
-  </nav>
-</header>
-
+{%endblock%}
+{%block content%}
 <main>
 
 <section id="timeline">
-
   <article>
     <h2>1958</h2>
     <p>The US created the Advanced Research Projects Agency (ARPA) as a response to Sputnik. It funded important computer and networking research.</p>
@@ -170,10 +160,4 @@
 
 </main>
 
-<footer>
-  <p>Web Programming — built with Flask and deployed on Render.</p>
-  <p>This website is created for educational purposes only, as part of the GIN446 - Web Programming course, School of Engineering, USEK. (Fall 2026-2027)</p>
-</footer>
-
-</body>
-</html>
+{%endblock%}
