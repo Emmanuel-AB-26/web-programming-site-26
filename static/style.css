@@ -72,6 +72,7 @@
 
   /* Layout */
   --container-width: 1200px;
+  --card-min-width: 240px;   /* smallest width of a gallery card */
   --gutter-min: 1.25rem;
   /* Side padding that centres content to --container-width on wide screens
      and never drops below --gutter-min on small ones. */
@@ -108,6 +109,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
@@ -158,6 +160,7 @@ h6 {
   font-weight: 600;
   line-height: var(--leading-heading);
   letter-spacing: -0.02em;
+  text-wrap: balance;
   color: var(--color-heading);
 }
 
@@ -171,6 +174,7 @@ h6 { font-size: var(--text-base); }
 p {
   margin: 0 0 var(--space-sm);
   max-width: 75ch;
+  text-wrap: pretty;
 }
 
 strong,
@@ -282,9 +286,9 @@ nav:has(a, .nav-title) {
   top: 0;
   z-index: 10;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-xs);
+  flex-flow: row wrap;                    /* items in a row, wrap when tight */
+  align-items: center;                    /* vertically centred */
+  gap: var(--space-xs) var(--space-sm);   /* same spacing between every item */
   padding: var(--space-sm) var(--gutter);
   background: var(--color-accent-soft);
   border-bottom: 1px solid var(--color-accent-border);
@@ -292,19 +296,19 @@ nav:has(a, .nav-title) {
 
 nav ul {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
+  flex-flow: row wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-sm);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-nav li { margin: 0; }
+nav li,
+nav li + li { margin: 0; }
 
 /* Visible label at the start of the nav bar (e.g. "Navigation window") */
 .nav-title {
-  display: inline-block;
-  margin-right: var(--space-sm);
   padding: 0.4rem var(--space-sm) 0.4rem 0;
   border-right: 1px solid var(--color-accent-border);
   font-family: var(--font-heading);
@@ -358,6 +362,69 @@ main > section + section { margin-top: var(--space-xl); }
 main > section > :last-child { margin-bottom: 0; }
 
 main > section > h2 { color: var(--color-accent-hover); }
+
+/* Weekly Work gallery (Grid), no HTML changes needed.
+   Applies to any <ul> placed directly inside a <section> in <main>, and to
+   any list that has the optional .weekly-list class. To keep an ordinary
+   bulleted list on some page, give that <ul> the class "plain-list".
+   Columns are added or dropped as space allows; min() stops a card from
+   overflowing on very narrow screens. */
+:is(.weekly-list, main > section > ul:not(.plain-list)) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li {
+  position: relative;               /* anchor for the stretched link */
+  display: flex;
+  align-items: center;
+  min-height: 6rem;
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li:has(a):hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-hover);
+}
+
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li > a {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: var(--leading-heading);
+  color: var(--color-heading);
+  text-decoration: none;
+}
+
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li > a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: none;
+}
+
+/* Stretched link: the whole card is clickable */
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li > a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+
+/* Keyboard focus ring goes around the whole card */
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li > a:focus-visible { outline: none; }
+
+:is(.weekly-list, main > section > ul:not(.plain-list)) > li:has(> a:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
 
 /* --------------------------------------------------------------------------
    9. Page layout: footer
@@ -522,6 +589,24 @@ input[type="submit"]:active {
   }
 
   header img { width: 96px; }
+
+  /* Nav: label gets its own row, links share each row evenly */
+  .nav-title {
+    flex: 1 1 100%;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  nav ul { flex: 1 1 100%; }
+
+  nav li,
+  nav > a { flex: 1 1 auto; }
+
+  nav li > a,
+  nav > a {
+    display: block;
+    text-align: center;
+  }
 
   main > section { padding: var(--space-md); }
 }
