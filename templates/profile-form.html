@@ -1,0 +1,193 @@
+{%extends "base.html"%}
+{%block head%}
+<link rel="stylesheet" 
+        href="{{ url_for('static', filename='form_style.css') }}"/>
+{%endblock%}
+{% block title %}Engineering Student Profile{% endblock %}
+{%block headerTitle%}Engineering Student Profile{%endblock%}
+{%block headerParagraph%}Complete this form to provide information about your academic background, technical skills, internship experience, and Final Year Project preferences.{%endblock%}
+{%block content%}
+<form action="{{ url_for('submit_profile') }}" method="post">
+
+<label for="student_id">Student ID:</label>
+<input type="text" id="student_id" name="student_id" placeholder="202312345" pattern="[0-9]{9}" required>
+<br><br>
+<label for="fullname">Full Name:</label>
+<input type="text" id="fullname" name="fullname" placeholder="First name and last name" required>
+<br><br>
+<label for="email">USEK Email:</label>
+<input type="email" id="email" name="email" placeholder="student@net.usek.edu.lb" pattern="[A-Za-z]+\.[A-Za-z]+@net\.usek\.edu\.lb" required>
+<br><br>
+<label for="phone">Mobile Number:</label>
+<input type="tel" id="phone" name="phone" placeholder="+961 70 123456" pattern="\+961 [0-9]{2} [0-9]{6}" required>
+<br><br>
+<label for="birthdate">Date of Birth:</label>
+<input type="date" id="birthdate" name="birthdate" required>
+<br><br>
+<label for="portfolio">Github:</label>
+<input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/username" pattern="https:\/\/github\.com\/[A-Za-z0-9-]+" required>
+<br><br>
+<label for="portfolio">GIN446 website</label>
+<input type="url" id="gin446" name="gin446" placeholder="Your RENDER website link" pattern="https:\/\/[a-z0-9-]+\.onrender\.com\/?"  required>
+<br><br>
+<label for="major">Engineering Major:</label>
+<select id="major" name="major" required>
+    <option value="">--Select your major--</option>
+    <option value="Computer">Computer Engineering</option>
+    <option value="Telecommunications">Telecommunications Engineering</option>
+    <option value="Electrical">Electrical Engineering</option>
+    <option value="Mechanical">Mechanical Engineering</option>
+    <option value="Civil">Civil Engineering</option>
+    <option value="Chemical">Chemical Engineering</option>
+    <option value="Biomedical">Biomedical Engineering</option>
+    <option value="Agricultural">Agricultural Engineering</option>
+    <option value="Food">Food Engineering</option>
+</select>
+<br><br>
+<label for="gpa">Current GPA /100:</label>
+<input type="number" id="gpa" name="gpa" step="0.01" min="40" max="100" placeholder="85.50" required>
+<br><br>
+<label for="credits">Credits Completed:</label>
+<input type="number" id="credits" name="credits" step="1" min="0" max="167" required>
+<br><br>
+
+<h2>Expected Graduation:</h2>
+<input type="radio" id="Spring" name="graduation" value="Spring">
+<label for="Spring">Spring</label>
+<input type="radio" id="Summer" name="graduation" value="Summer">
+<label for="Summer">Summer</label>
+<input type="radio" id="Fall" name="graduation" value="Fall">
+<label for="Fall">Fall</label>
+<br><br>
+<label for="graduation_month">Expected Graduation Month & Year:</label>
+<input type="month" id="graduation_month" name="graduation_month">
+<br><br>
+<h2>Have you completed an engineering internship?</h2>
+<input type="radio" id="internYES" name="internship_completed" value="Yes">
+<label for="internYES">Yes</label>
+<input type="radio" id="internNO" name="internship_completed" value="No">
+<label for="internNO">No</label>
+<br><br>
+<h2>Select all areas in which you have experience:</h2>
+<input type="checkbox" id="Programming" name="skills" value="Programming">
+<label for="Programming">Programming</label><br>
+<input type="checkbox" id="Embedded Systems" name="skills" value="Embedded Systems">
+<label for="Embedded Systems">Embedded Systems</label><br>
+<input type="checkbox" id="Electronics" name="skills" value="Electronics">
+<label for="Electronics">Electronics</label><br>
+<input type="checkbox" id="Computer Networks" name="skills" value="Computer Networks">
+<label for="Computer Networks">Computer Networks</label><br>
+<input type="checkbox" id="Telecommunications" name="skills" value="Telecommunications">
+<label for="Telecommunications">Telecommunications</label><br>
+<input type="checkbox" id="Biomedical Instrumentation" name="skills" value="Biomedical Instrumentation">
+<label for="Biomedical Instrumentation">Biomedical Instrumentation</label><br>
+<input type="checkbox" id="Artificial Intelligence/Machine Learning" name="skills" value="Artificial Intelligence/Machine Learning">
+<label for="Artificial Intelligence/Machine Learning">Artificial Intelligence/Machine Learning</label><br>
+<input type="checkbox" id="Signal Processing" name="skills" value="Signal Processing">
+<label for="Signal Processing">Signal Processing</label><br>
+<br><br>
+
+<label for="language">Primary Programming Language:</label>
+
+<input type="text" id="language" name="language" list="language_options" placeholder="Start typing...">
+<datalist id="language_options">
+    <option value="Python">
+    <option value="Java">
+    <option value="C++">
+    <option value="C#">
+    <option value="JavaScript">
+    <option value="PHP">
+</datalist>
+
+<br><br>
+
+<label for="software">Engineering Software Used:</label>
+<select name="software" id="software" multiple>
+  <option value="MATLAB">MATLAB</option>
+  <option value="Simulink">Simulink</option>
+  <option value="LabVIEW">LabView</option>
+  <option value="LTspice">LTspice</option>
+  <option value="Vivado">Vivado</option>
+  <option value="SolidWorks">SolidWorks</option>
+  <option value="ANSYS">ANSYS</option>
+</select>
+<br><br>
+<label for="project_title">Proposed Project Title:</label>
+<input type="text" id="project_title" name="project_title" placeholder="Enter a tentative project title">
+<br><br>
+
+<label for="project_area">Preferred Project Area:</label>
+<select name="project_area" id="project_area">
+    <optgroup label="Computer Engineering">
+    <option value="Artificial Intelligence">Artificial Intelligence</option>
+    <option value="Web Applications">Web Applications</option>
+    <option value="Cybersecurity">Cybersecurity</option>
+    <option value="Internet of Things">Internet of Things</option>
+    </optgroup>
+    <optgroup label="Electrical Engineering">
+    <option value="Power Systems">Power Systems</option>
+    <option value="Renewable Energy">Renewable Energy</option>
+    <option value="Control Systems">Control Systems</option>
+    </optgroup>
+    <optgroup label="Biomedical Engineering">
+    <option value="Medical Imaging">Medical Imaging</option>
+    <option value="Biosensors">Biosensors</option>
+    <option value="Medical Devices">Medical Devices</option>
+    </optgroup>
+    <optgroup label="Telecommunications Engineering">
+    <option value="Wireless Communications">Wireless Communications</option>
+    <option value="5G/6G Networks">5G/6G Networks</option>
+    <option value="Signal/Image Processing">Signal/Image Processing</option>
+    <option value="RF Engineering">RF Engineering</option>
+    </optgroup>
+    <optgroup label="Mechanical Engineering">
+    <option value="Machine Design">Machine Design</option>
+    <option value="Thermal System Optimization">Thermal System Optimization</option>
+    <option value="Energy Research">Energy Research</option>
+    </optgroup>
+    <optgroup label="Chemical Engineering">
+    <option value="Chemical Process Design">Chemical Process Design</option>
+    <option value="Petroleum Engineering">Petroleum Engineering</option>
+    <option value="Water Treatment">Water Treatment</option>
+    </optgroup>
+    <optgroup label="Civil Engineering">
+    <option value="Bridge Design">Bridge Design</option>
+    <option value="Airport Design">Airport Design</option>
+    <option value="Skyscraper Design">Skyscraper Design</option>
+    </optgroup>
+    <optgroup label="Agricultural and Food Engineering">
+    <option value="Organic Agriculture">Organic Agriculture</option>
+    <option value="Wine Production">Wine Production</option>
+    <option value="Food Safety">Food Safety</option>
+    </optgroup>
+</select>
+<br><br>
+<label for="description">Brief Project Description:</label>
+<textarea id="description" name="description" rows="4" cols="50">
+Describe the problem, proposed solution, and expected outcome...
+</textarea>
+<br><br>
+<label for="team_size">Preferred Team Size</label>
+<input type="number" id="team_size" name="team_size" step="1" min="1" max="4" required>
+<br><br>
+
+<label for="project_color">Choose a color for your project dashboard:</label>
+<input type="color" id="project_color" name="project_color" value="#a6a6a6">
+<br><br>
+<label for="meeting_date">Preffered Meeting Date:</label>
+<input type="date" id="meeting_date" name="meeting_date" required>
+<br><br>
+
+<label for="meeting_time">Preffered Meeting Time:</label>
+<input type="time" id="meeting_time" name="meeting_time">
+<br><br>
+<label for="confirmation">I confirm that the information provided is accurate.</label>
+<input type="checkbox" id="confirmation "name="confirmation" required>
+<br><br>
+<input type="hidden" name="form_version" value="2026-2027">.
+
+<button type="submit">Submit Profile</button>
+<button type="reset">Clear Form</button>
+
+</form>
+{%endblock%}
