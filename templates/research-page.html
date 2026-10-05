@@ -1,0 +1,71 @@
+{%extends "base.html"%}
+{%block title%}Research Questions Webpage{%endblock%}
+{%block headerTitle%}Research Questions Webpage{%endblock%}
+{%block headerParagraph%}The following webpage answers the research questions which appear throughout the course.{%endblock%}
+{%block navigation%}
+            <h2>Navigation Window</h2>
+            <p><a href="#Question 1">Question 1</a></p>
+            <p><a href="#Question 2">Question 2</a></p>
+            <p><a href="#Question 3">Question 3</a></p>
+            <p><a href="#Question 4">Question 4</a></p>
+
+{%endblock%}
+{%block content%}
+        <main>
+            <section id="Question 1">
+            <h2>Question 1: CSS at rules</h2>
+                <article>
+                    <h3>What are the CSS @ rules?</h3>
+                    <p>There are several at rules used:</p>
+                    <ul>
+                        <li><p>@media:Applies CSS depending on screen/device conditions.</p></li>
+                        <li><p>@import:Imports another CSS file.</p></li>
+                        <li><p>@font-face:Defines a custom font.</p></li>
+                        <li><p>@keyframes:Defines animations</p></li>
+                        <li><p>@supports:Applies CSS if a feature is supported</p></li>
+                        <li><p>@container:Applies styles based on container's size</p></li>
+                        <li><p>@layer:Controls CSS cascade layers</p></li>
+                        <li><p>@page:Styles printed pages</p></li>
+                        <li><p>@charset:Specifies character encoding</p></li>
+                    </ul>
+                </article>
+            </section>
+
+            <section id="Question 2">
+            <h2>Question 2: Difference between button and inbutton</h2>
+                <article>
+                    <h3>What is the difference between &lt;button&gt; and &lt;input type="button"&gt;? </h3>
+                    <p>The &lt;button&gt; element and &lt;input type="button"&gt; are both used to create clickable buttons in HTML. The main difference is that the &lt;button&gt; element is more flexible because it can contain text, images, icons, or other HTML elements, while &lt;input type="button"&gt; is a self-closing input element whose text is defined using the <code>value</code> attribute. Also, &lt;button&gt; can be used as a submit or reset button by specifying <code>type="submit"</code> or <code>type="reset"</code>, whereas &lt;input type="button"&gt; only creates a regular clickable button.</p>
+                </article>
+            </section>
+
+            <section id="Question 3">
+            <h2>Question 3: Difference between datalist and select.</h2>
+                <article>
+                    <h3>What is the difference between &lt;datalist&gt; and &lt;select&gt; </h3>
+                    <p>The &lt;datalist&gt; element and &lt;select&gt; element are both used to provide users with a list of options in HTML. The main difference is that &lt;select&gt; provides a menu where the user selects one of the available options, while &lt;datalist&gt; provides suggested values but still allows the user to enter a value that is not in the list. A &lt;datalist&gt; is associated with an &lt;input&gt; element using the <code>list</code> attribute, whereas &lt;select&gt; contains its &lt;option&gt; elements directly inside it.</p>
+                </article>
+            </section>
+
+            <section id="Question 4">
+            <h2>Question 4: Difference between javascript,jscript, and ecmascript</h2>
+                <article>
+                    <h3> What is the difference between javascript,jscript, and ecmascript?</h3>
+                    <p>JavaScript, JScript, and ECMAScript are closely related, but they are not exactly the same thing. ECMAScript is the standardized specification that defines the language, while JavaScript is a programming language implementation based on that specification. JScript was Microsoft's implementation of ECMAScript, mainly used in Internet Explorer and Windows scripting environments. In simple terms, ECMAScript is the standard, JavaScript is the most widely known implementation of that standard, and JScript was Microsoft's implementation.</p>
+                </article>
+            </section>
+
+
+
+            <section id="References">
+            <h2>Source Links:</h2>
+                <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/At-rules">MDN-CSS at rules</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button?utm_source=chatgpt.com">MDN-button element</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/button?utm_source=chatgpt.com">MDN-in button element</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/datalist?utm_source=chatgpt.com">MDN-datalist</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select?utm_source=chatgpt.com">MDN-select</a></li>
+                </ul>
+            </section>
+        </main>
+{%endblock%}
