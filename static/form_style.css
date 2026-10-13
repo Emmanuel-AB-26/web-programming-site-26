@@ -1,3 +1,4 @@
+
 /* ==========================================================================
    Engineering Student Profile Form
    Enhanced Modern Graphite design
@@ -9,29 +10,28 @@
    -------------------------------------------------------------------------- */
 
 form {
-  position: relative;
+    position: relative;
+    z-index: 1;
 
-  max-width: 900px;
-  margin: 0 auto;
-  padding: var(--space-lg);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-lg);
 
-  background: var(--color-surface);
+    background: var(--color-surface);
 
-  border: 1px solid var(--color-border);
-  border-top: 5px solid var(--color-accent);
-  border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    border-top: 5px solid var(--color-accent);
+    border-radius: var(--radius-lg);
 
-  box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md);
 
-  transition:
-    box-shadow var(--transition),
-    transform var(--transition);
+    transition:
+        box-shadow var(--transition),
+        transform var(--transition);
 }
 
-
-/* Subtle elevation when hovering over the form */
 form:hover {
-  box-shadow: var(--shadow-hover);
+    box-shadow: var(--shadow-hover);
 }
 
 
@@ -40,14 +40,12 @@ form:hover {
    -------------------------------------------------------------------------- */
 
 form label {
-  display: block;
+    display: block;
+    margin-bottom: var(--space-xs);
 
-  margin-bottom: var(--space-xs);
-
-  font-family: var(--font-heading);
-  font-weight: 700;
-
-  color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-heading);
 }
 
 
@@ -58,61 +56,10 @@ form label {
 form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]),
 form select,
 form textarea {
-  display: block;
-
-  width: 100%;
-  max-width: 100%;
-
-  margin-bottom: var(--space-md);
-
-  background: #fafafa;
-
-  transition:
-    border-color var(--transition),
-    background-color var(--transition),
-    box-shadow var(--transition),
-    transform var(--transition);
-}
-
-
-/* Field hover effect */
-
-form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):hover,
-form select:hover,
-form textarea:hover {
-  background: #ffffff;
-  border-color: var(--color-border-strong);
-}
-
-
-/* Field focus effect */
-
-form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):focus,
-form select:focus,
-form textarea:focus {
-  background: #ffffff;
-
-  border-color: var(--color-accent);
-
-  box-shadow:
-    0 0 0 3px rgba(61, 65, 72, 0.15),
-    var(--shadow-sm);
-
-  transform: translateY(-1px);
-}
-
-/* --------------------------------------------------------------------------
-   Datalist input
-   -------------------------------------------------------------------------- */
-
-/* Input connected to a datalist */
-
-form input[list] {
     display: block;
 
     width: 100%;
     max-width: 100%;
-
     margin-bottom: var(--space-md);
 
     background: #fafafa;
@@ -124,20 +71,17 @@ form input[list] {
         transform var(--transition);
 }
 
-
-/* Datalist input hover */
-
-form input[list]:hover {
+form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):hover,
+form select:hover,
+form textarea:hover {
     background: #ffffff;
     border-color: var(--color-border-strong);
 }
 
-
-/* Datalist input focus */
-
-form input[list]:focus {
+form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):focus,
+form select:focus,
+form textarea:focus {
     background: #ffffff;
-
     border-color: var(--color-accent);
 
     box-shadow:
@@ -147,208 +91,202 @@ form input[list]:focus {
     transform: translateY(-1px);
 }
 
+
 /* --------------------------------------------------------------------------
-   4. Section headings
+   4. Datalist input
+   -------------------------------------------------------------------------- */
+
+form input[list] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: var(--space-md);
+    background: #fafafa;
+
+    transition:
+        border-color var(--transition),
+        background-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+form input[list]:hover {
+    background: #ffffff;
+    border-color: var(--color-border-strong);
+}
+
+form input[list]:focus {
+    background: #ffffff;
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 0 0 3px rgba(61, 65, 72, 0.15),
+        var(--shadow-sm);
+
+    transform: translateY(-1px);
+}
+
+
+/* --------------------------------------------------------------------------
+   5. Section headings
    -------------------------------------------------------------------------- */
 
 form h2 {
-  position: relative;
+    position: relative;
 
-  margin-top: var(--space-lg);
-  margin-bottom: var(--space-md);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
 
-  padding-bottom: var(--space-xs);
+    font-family: var(--font-heading);
+    font-size: var(--text-h2);
+    color: var(--color-accent-hover);
 
-  font-family: var(--font-heading);
-  font-size: var(--text-h2);
-
-  color: var(--color-accent-hover);
-
-  border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
-
-/* Small dark accent underneath section headings */
-
 form h2::after {
-  content: "";
+    content: "";
+    display: block;
 
-  display: block;
+    width: 45px;
+    height: 3px;
+    margin-top: 8px;
 
-  width: 45px;
-  height: 3px;
-
-  margin-top: 8px;
-
-  background: var(--color-accent);
-
-  border-radius: 10px;
+    background: var(--color-accent);
+    border-radius: 10px;
 }
 
 
 /* --------------------------------------------------------------------------
-   5. Radio buttons and checkboxes
+   6. Radio buttons and checkboxes
    -------------------------------------------------------------------------- */
 
 form input[type="radio"],
 form input[type="checkbox"] {
-  width: auto;
-  min-height: 0;
+    width: auto;
+    min-height: 0;
 
-  margin-right: 0.4rem;
-  margin-bottom: 0.5rem;
+    margin-right: 0.4rem;
+    margin-bottom: 0.5rem;
 
-  accent-color: var(--color-accent);
-
-  cursor: pointer;
+    accent-color: var(--color-accent);
+    cursor: pointer;
 }
-
-
-/* Labels beside radio buttons and checkboxes */
 
 form input[type="radio"] + label,
 form input[type="checkbox"] + label {
-  display: inline-block;
+    display: inline-block;
 
-  margin-right: var(--space-sm);
-  margin-bottom: var(--space-xs);
+    margin-right: var(--space-sm);
+    margin-bottom: var(--space-xs);
 
-  font-family: var(--font-body);
-  font-weight: 400;
-
-  cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 400;
+    cursor: pointer;
 }
-
-
-/* Slight hover effect */
 
 form input[type="radio"]:hover,
 form input[type="checkbox"]:hover {
-  transform: scale(1.08);
+    transform: scale(1.08);
 }
 
 
 /* --------------------------------------------------------------------------
-   6. Multiple select
+   7. Multiple select
    -------------------------------------------------------------------------- */
 
 form select[multiple] {
-  min-height: 160px;
-
-  padding: var(--space-sm);
-
-  line-height: 1.8;
+    min-height: 160px;
+    padding: var(--space-sm);
+    line-height: 1.8;
 }
 
 
 /* --------------------------------------------------------------------------
-   7. Textarea
+   8. Textarea
    -------------------------------------------------------------------------- */
 
 form textarea {
-  min-height: 130px;
-
-  resize: vertical;
-
-  line-height: 1.6;
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.6;
 }
 
 
 /* --------------------------------------------------------------------------
-   8. Color picker
+   9. Color picker
    -------------------------------------------------------------------------- */
 
 form input[type="color"] {
-  display: block;
+    display: block;
 
-  width: 75px;
-  height: 45px;
+    width: 75px;
+    height: 45px;
+    padding: 3px;
+    margin-bottom: var(--space-md);
 
-  padding: 3px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
 
-  margin-bottom: var(--space-md);
+    cursor: pointer;
 
-  background: var(--color-surface);
-
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-
-  cursor: pointer;
-
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
 }
 
-
 form input[type="color"]:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-sm);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
 }
 
 
 /* --------------------------------------------------------------------------
-   9. Date, month and time fields
+   10. Date, month and time fields
    -------------------------------------------------------------------------- */
 
 form input[type="date"],
 form input[type="month"],
 form input[type="time"] {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 
 /* --------------------------------------------------------------------------
-   10. Buttons
+   11. Buttons
    -------------------------------------------------------------------------- */
 
 form button {
-  margin-top: var(--space-sm);
-  margin-right: var(--space-xs);
+    margin-top: var(--space-sm);
+    margin-right: var(--space-xs);
 
-  transition:
-    background-color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition),
-    transform var(--transition);
+    transition:
+        background-color var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
 }
-
-
-/* Submit button */
 
 form button[type="submit"] {
-  min-width: 150px;
+    min-width: 150px;
 }
-
-
-/* Reset button */
 
 form button[type="reset"] {
-  color: var(--color-text);
-
-  background: var(--color-surface-alt);
-
-  border-color: var(--color-border-strong);
+    color: var(--color-text);
+    background: var(--color-surface-alt);
+    border-color: var(--color-border-strong);
 }
-
-
-/* Reset hover */
 
 form button[type="reset"]:hover {
-  color: var(--color-heading);
-
-  background: var(--color-border);
-
-  border-color: var(--color-border-strong);
+    color: var(--color-heading);
+    background: var(--color-border);
+    border-color: var(--color-border-strong);
 }
 
-
-/* --------------------------------------------------------------------------
-   11. Button area
-   -------------------------------------------------------------------------- */
-
 form button:last-child {
-  margin-right: 0;
+    margin-right: 0;
 }
 
 
@@ -358,8 +296,8 @@ form button:last-child {
 
 form input::placeholder,
 form textarea::placeholder {
-  color: var(--color-text-muted);
-  opacity: 0.75;
+    color: var(--color-text-muted);
+    opacity: 0.75;
 }
 
 
@@ -367,20 +305,15 @@ form textarea::placeholder {
    13. Validation
    -------------------------------------------------------------------------- */
 
-/* Valid fields */
-
 form input:valid:not(:placeholder-shown),
 form select:valid {
-  border-color: var(--color-border-strong);
+    border-color: var(--color-border-strong);
 }
-
-
-/* Invalid fields only become noticeable after interaction */
 
 form input:focus:invalid,
 form select:focus:invalid,
 form textarea:focus:invalid {
-  border-color: var(--color-accent);
+    border-color: var(--color-accent);
 }
 
 
@@ -389,7 +322,7 @@ form textarea:focus:invalid {
    -------------------------------------------------------------------------- */
 
 form input[type="hidden"] {
-  display: none;
+    display: none;
 }
 
 
@@ -398,19 +331,16 @@ form input[type="hidden"] {
    -------------------------------------------------------------------------- */
 
 @media (max-width: 39.99em) {
+    form {
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+    }
 
-  form {
-    padding: var(--space-md);
-
-    border-radius: var(--radius-md);
-  }
-
-  form button {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: var(--space-xs);
-  }
-
+    form button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: var(--space-xs);
+    }
 }
 
 
@@ -419,17 +349,15 @@ form input[type="hidden"] {
    -------------------------------------------------------------------------- */
 
 @media (min-width: 40em) {
+    form {
+        padding: var(--space-lg);
+    }
 
-  form {
-    padding: var(--space-lg);
-  }
-
-  form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]),
-  form select,
-  form textarea {
-    max-width: 700px;
-  }
-
+    form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]),
+    form select,
+    form textarea {
+        max-width: 700px;
+    }
 }
 
 
@@ -438,42 +366,126 @@ form input[type="hidden"] {
    -------------------------------------------------------------------------- */
 
 @media (min-width: 64em) {
-
-  form {
-    padding: 2.75rem;
-  }
-
+    form {
+        padding: 2.75rem;
+    }
 }
 
+
 /* ==========================================================================
-   ADVANCED GEOMETRIC DECORATIONS
+   18. Fieldsets and legends
    ========================================================================== */
 
-/* Main becomes the decoration area */
+form fieldset {
+    position: relative;
+    min-width: 0;
+
+    margin: var(--space-lg) 0;
+    padding: var(--space-md);
+
+    background: var(--color-surface-alt);
+
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius-md);
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background-color var(--transition);
+}
+
+form fieldset:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+}
+
+form fieldset legend {
+    max-width: 100%;
+    padding: 0.35rem 0.8rem;
+
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    color: var(--color-heading);
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+}
+
+form fieldset > :first-child {
+    margin-top: 0;
+}
+
+form fieldset > :last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 39.99em) {
+    form fieldset {
+        margin: var(--space-md) 0;
+        padding: var(--space-sm);
+    }
+
+    form fieldset legend {
+        font-size: 0.95rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+
+/* ==========================================================================
+   19. Site-wide navigation compatibility
+   ========================================================================== */
+
+/*
+   The site-wide navigation is sticky on tablet and desktop.
+   Keep the navigation above the form while scrolling.
+   The navigation's main positioning rules remain in style.css.
+*/
+
+nav:has(a, .nav-title) {
+    position: relative;
+    z-index: 100;
+}
+
+@media (min-width: 40em) {
+    nav:has(a, .nav-title) {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+}
+
+
+/* ==========================================================================
+   20. Advanced geometric decorations
+   ========================================================================== */
+
 main {
     position: relative;
+    isolation: isolate;
     overflow: hidden;
 }
 
-
-/* Keep the actual form above the decorations */
+/* Keep the form above decorative backgrounds */
 main > section,
 main > form {
     position: relative;
-    z-index: 5;
+    z-index: 1;
 }
 
 
-/* ==========================================================================
-   LEFT SIDE
-   ========================================================================== */
+/* Large circle on the left */
 
-/* Large circle */
 main::before {
     content: "";
 
     position: absolute;
-
     left: -80px;
     top: 180px;
 
@@ -484,7 +496,6 @@ main::before {
     border-radius: 50%;
 
     opacity: 0.45;
-
     pointer-events: none;
 
     box-shadow:
@@ -493,16 +504,12 @@ main::before {
 }
 
 
-/* ==========================================================================
-   RIGHT SIDE
-   ========================================================================== */
+/* Large rotated square on the right */
 
-/* Large rotated square */
 main::after {
     content: "";
 
     position: absolute;
-
     right: -70px;
     top: 420px;
 
@@ -510,11 +517,9 @@ main::after {
     height: 220px;
 
     border: 2px solid var(--color-accent-border);
-
     transform: rotate(45deg);
 
     opacity: 0.4;
-
     pointer-events: none;
 
     box-shadow:
@@ -524,28 +529,13 @@ main::after {
 
 
 /* ==========================================================================
-   EXTRA GEOMETRIC ELEMENTS
+   21. Geometric elements around the form
    ========================================================================== */
-
-/*
-   These decorations use the form itself as the reference point.
-*/
-
-form {
-    position: relative;
-    z-index: 10;
-}
-
-
-/* --------------------------------------------------------------------------
-   LEFT geometric cluster
-   -------------------------------------------------------------------------- */
 
 form::before {
     content: "";
 
     position: absolute;
-
     left: -210px;
     top: 70px;
 
@@ -553,11 +543,9 @@ form::before {
     height: 130px;
 
     border: 2px solid var(--color-border-strong);
-
     transform: rotate(45deg);
 
     opacity: 0.28;
-
     pointer-events: none;
 
     box-shadow:
@@ -565,16 +553,10 @@ form::before {
         -50px 130px 0 -58px var(--color-accent-border);
 }
 
-
-/* --------------------------------------------------------------------------
-   RIGHT geometric cluster
-   -------------------------------------------------------------------------- */
-
 form::after {
     content: "";
 
     position: absolute;
-
     right: -210px;
     bottom: 100px;
 
@@ -582,11 +564,9 @@ form::after {
     height: 130px;
 
     border: 2px solid var(--color-border-strong);
-
     border-radius: 50%;
 
     opacity: 0.3;
-
     pointer-events: none;
 
     box-shadow:
@@ -595,23 +575,16 @@ form::after {
 }
 
 
-/* ==========================================================================
-   EXTRA DECORATIVE ELEMENTS USING SECTION HEADINGS
-   ========================================================================== */
-
-/* Small geometric marker beside every section heading */
+/* Small diamond beside section headings */
 
 form h2 {
     position: relative;
 }
 
-
-/* Square marker */
 form h2::before {
     content: "";
 
     position: absolute;
-
     left: -18px;
     top: 50%;
 
@@ -619,7 +592,6 @@ form h2::before {
     height: 7px;
 
     border: 2px solid var(--color-accent);
-
     transform: translateY(-50%) rotate(45deg);
 
     opacity: 0.7;
@@ -627,12 +599,8 @@ form h2::before {
 
 
 /* ==========================================================================
-   DOTTED GRID EFFECT
+   22. Dotted grid background
    ========================================================================== */
-
-/*
-   Add a subtle dotted pattern on the left side.
-*/
 
 main {
     background-image:
@@ -642,19 +610,11 @@ main {
         );
 
     background-size: 22px 22px;
-
     background-position: 2% 10%;
-
     background-repeat: no-repeat;
 }
 
-
-/*
-   Second dotted area on the right.
-*/
-
 @media (min-width: 901px) {
-
     main {
         background-image:
             radial-gradient(
@@ -674,21 +634,18 @@ main {
 
         background-repeat: no-repeat;
     }
-
 }
 
 
 /* ==========================================================================
-   DECORATIVE DIAGONAL LINES
+   23. Decorative diagonal lines
    ========================================================================== */
 
 @media (min-width: 901px) {
-
     main > section::before {
         content: "";
 
         position: absolute;
-
         left: -150px;
         top: 45%;
 
@@ -696,20 +653,16 @@ main {
         height: 2px;
 
         background: var(--color-border);
-
         transform: rotate(-35deg);
 
         opacity: 0.5;
-
         pointer-events: none;
     }
-
 
     main > section::after {
         content: "";
 
         position: absolute;
-
         right: -150px;
         top: 35%;
 
@@ -717,24 +670,19 @@ main {
         height: 2px;
 
         background: var(--color-border);
-
         transform: rotate(35deg);
 
         opacity: 0.5;
-
         pointer-events: none;
     }
-
 }
 
 
 /* ==========================================================================
-   SMALL NETWORK NODES
+   24. Small network nodes
    ========================================================================== */
 
 @media (min-width: 901px) {
-
-    /* Left nodes */
     main > section {
         box-shadow:
             -110px 120px 0 -106px var(--color-accent),
@@ -744,21 +692,14 @@ main {
             145px -190px 0 -141px var(--color-border-strong),
             95px -270px 0 -91px var(--color-accent-border);
     }
-
 }
 
 
 /* ==========================================================================
-   RESPONSIVE
+   25. Responsive decorations
    ========================================================================== */
 
 @media (max-width: 900px) {
-
-    /*
-       Remove the large decorations on smaller screens.
-       This keeps the form clean and easy to use.
-    */
-
     main::before,
     main::after,
     form::before,
@@ -772,19 +713,16 @@ main {
     main {
         background-image: none;
     }
-
 }
 
 
 /* ==========================================================================
-   REDUCED MOTION
+   26. Reduced motion
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-
     main *,
     form * {
         transition: none !important;
     }
-
 }
