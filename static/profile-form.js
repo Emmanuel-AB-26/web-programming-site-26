@@ -1,14 +1,18 @@
-const preview=document.getElementById("preview")
-const previewBtn = document.getElementById("previewBtn");
 const form = document.getElementById("profile-form");
 const panel = document.getElementById("panel");
+const preview = document.getElementById("preview");
+const editBtn = document.getElementById("editBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+
+let confirmedSubmit = false;
 
 form.addEventListener("submit", function (e) {
-  e.preventDefault(); // stop the form from submitting to the server
-  const clicked = e.target;    // the element that fired the event ... handle it in the browser instead ...
-});
+    if (confirmedSubmit) {
+        return;
+    }
 
-previewBtn.addEventListener("click", function () {
+  e.preventDefault(); // stop the form from submitting to the server
+
   if (!form.checkValidity()) {   // any HTML rule (required, pattern, min/max) failing?
     form.reportValidity();       // show the browser's warning bubbles
     return;  
@@ -27,16 +31,16 @@ const graduation=document.querySelector('input[name="graduation"]:checked')?.val
 const graduation_month=document.getElementById("graduation_month").value;
 const internship_completed=document.querySelector('input[name="internship_completed"]:checked')?.value;
 const skills = [...document.querySelectorAll('input[name="skills"]:checked')].map(cb => cb.value);
-const language = [...document.getElementById("language").selectedOptions].map(opt => opt.value);
+const language = document.getElementById("language").value
 const software = [...document.getElementById("software").selectedOptions].map(opt => opt.value);
 const project_title = document.getElementById("project_title").value;
-const project_area = [...document.getElementById("project_area").selectedOptions].map(opt => opt.value);
+const project_area = document.getElementById("project_area").value;
 const description = document.getElementById("description").value;
 const team_size = document.getElementById("team_size").value;
 const project_color = document.getElementById("project_color").value;
 const meeting_date = document.getElementById("meeting_date").value;
 const meeting_time = document.getElementById("meeting_time").value;
-const confirmation = [...document.querySelectorAll('input[name="confirmation"]:checked')].map(cb => cb.value);
+const confirmation = document.getElementById("confirmation").checked;
 
   // form is valid → continue (e.g., open a preview)
 preview.textContent="";
@@ -135,11 +139,19 @@ meeting_time_preview.textContent="Meeting Time: "+meeting_time;
 preview.appendChild(meeting_time_preview);
 
 const confirmation_preview=document.createElement("p");
-confirmation_preview.textContent="You have confirmed that all the information is valid: "+confirmation;
+confirmation_preview.textContent="You have confirmed that all the information is valid: "+(confirmation? "Yes":"No");
 preview.appendChild(confirmation_preview);
 
+form.hidden=true;
+panel.hidden=false;
 });
 
+editBtn.addEventListener("click", function() {
+    panel.hidden = true;
+    form.hidden = false;
+});
 
-  showBtn.addEventListener("click",() => panel.classList.add("open"));    // Show
-  hideBtn.addEventListener("click",() => panel.classList.remove("open")); // Hide
+confirmBtn.addEventListener("click", function() {
+    confirmedSubmit = true;
+    form.requestSubmit();
+});

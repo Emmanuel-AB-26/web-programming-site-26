@@ -53,6 +53,7 @@ def home():
         {"week": 2, "title": "History of the Web (AI)", "url": "/web-history-ai"},
         {"week": 4, "title": "Engineering Student Profile", "url": "/submit-profile"},
         {"week": 5, "title": "JavaScript app", "url": "/quiz"},
+        {"week": 6, "title": "Engineering Student Profile-Enhanced","url": "/submit-profile-review"},
     ]
     return render_template("index.html", weekly_work=weekly_work)
 
@@ -102,6 +103,10 @@ def submit_profile():
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
     return render_template("quiz.html")
+
+@app.route("/submit-profile-review", methods=["GET", "POST"])
+def submit_profile_review():
+    return render_template("week6-profile-form.html")
 
 
 if __name__ == "__main__":

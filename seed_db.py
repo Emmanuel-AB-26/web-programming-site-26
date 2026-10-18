@@ -17,7 +17,8 @@ import json
 from flask import Flask
 from quiz_api import db, Question, database_uri
 
-
+#postgresql://quiz_n0w7_user:j1wml8UEgGZzzwft8EmvaKisV361sADo@dpg-db71h1s9v7es73a5suq0-a/quiz_n0w7
+#postgresql://quiz_n0w7_user:j1wml8UEgGZzzwft8EmvaKisV361sADo@dpg-db71h1s9v7es73a5suq0-a.oregon-postgres.render.com/quiz_n0w7
 QUESTIONS = [
     {
         "question": "What organization was created by the United States in 1958 in response to Sputnik?",
