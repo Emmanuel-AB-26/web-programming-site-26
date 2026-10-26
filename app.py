@@ -54,6 +54,8 @@ def home():
         {"week": 4, "title": "Engineering Student Profile", "url": "/submit-profile"},
         {"week": 5, "title": "JavaScript app", "url": "/quiz"},
         {"week": 6, "title": "Engineering Student Profile-Enhanced","url": "/submit-profile-review"},
+        {"week": 7, "title": "Live Quiz with Fetch", "url": "/live_quiz"},
+        {"week": 8, "title": "Profile Validated", "url": "/profile-validated"},
     ]
     return render_template("index.html", weekly_work=weekly_work)
 
@@ -108,7 +110,31 @@ def quiz():
 def submit_profile_review():
     return render_template("week6-profile-form.html")
 
+@app.route("/live_quiz", methods=["GET", "POST"])
+def live_quiz():
+    return render_template("live_quiz.html")
+
+
+@app.route("/profile-validated", methods=["GET", "POST"])
+def profile_validated():
+ if request.method == "POST":
+    errors, cleaned = validate_profile(request.form)
+    if errors:
+      # something's wrong -> re-show the FORM with errors + what was typed
+      return render_template(
+        "profile-form-validated.html",
+        errors=errors,
+        data=request.form,
+        sel_skills=request.form.getlist("skills"),
+        sel_software=request.form.getlist("software"),
+      )
+    # all good -> show the profile
+    return render_template("profile_validated.html", data=cleaned,
+               skills=cleaned.get("skills", []),
+               software=cleaned.get("software", []))
+  # first visit (GET): empty form
+ return render_template("profile-form-validated.html", errors={}, data={}, sel_skills=[], sel_software=[])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+ app.run(debug=True)
 
