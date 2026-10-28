@@ -43,6 +43,8 @@ app = Flask(__name__)
 from quiz_api import init_quiz
 init_quiz(app)
 
+from validators import validate_profile
+
 @app.route("/")
 def home():
     """Serve the portfolio home page."""
@@ -129,7 +131,7 @@ def profile_validated():
         sel_software=request.form.getlist("software"),
       )
     # all good -> show the profile
-    return render_template("profile_validated.html", data=cleaned,
+    return render_template("profile.html", data=cleaned,
                skills=cleaned.get("skills", []),
                software=cleaned.get("software", []))
   # first visit (GET): empty form

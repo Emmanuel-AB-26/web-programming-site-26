@@ -16,6 +16,7 @@
     </header>
     <nav>
     <ul class="site-nav">
+        <li><a href="{{ url_for('home') }}">Homepage</a></li>
         <li><a href="{{ url_for('internet_history') }}">Internet History Page</a></li>
         <li><a href="{{ url_for('internet_history_ai') }}">AI Internet History Page</a></li>
         <li><a href="{{ url_for('web_history') }}">Web History Page</a></li>
@@ -24,6 +25,7 @@
         <li><a href="{{ url_for('quiz') }}">Quiz Page</a></li>
         <li><a href="{{ url_for('submit_profile_review') }}">Enhanced Engineering Profile</a></li>
         <li><a href="{{ url_for('live_quiz') }}">Live Quiz with Fetch</a></li>
+        <li><a href="{{ url_for('profile_validated') }}">Validated Profile</a></li>
         <li><a href="{{ url_for('research_page') }}">Research Page</a></li>
     </ul>
     {%block navigation%}
