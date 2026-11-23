@@ -7,11 +7,13 @@
    ========================================================================== */
 
 .container {
-  /* Quiz-only feedback colours, muted to sit beside the graphite palette */
-  --quiz-success: #2f6f4f;
-  --quiz-success-soft: #e9f2ed;
-  --quiz-danger: #a3392e;
-  --quiz-danger-soft: #f9ecea;
+  /* Feedback colours now come from the shared state tokens in style.css,
+     so a "correct" answer and a "saved" form use the same green, and a
+     wrong answer and a form error use the same red, everywhere. */
+  --quiz-success: var(--color-success);
+  --quiz-success-soft: var(--color-success-soft);
+  --quiz-danger: var(--color-error);
+  --quiz-danger-soft: var(--color-error-bg);
   --radio-size: 1.25rem;
 }
 
@@ -116,6 +118,29 @@ h1 {
   letter-spacing: 0;
 }
 
+/* LOADING state, no JS changes needed: until your script fills in the
+   question, the empty heading shows a shimmering placeholder instead of
+   a blank gap. (Same shimmer as .skeleton in style.css.) */
+#questionText:empty {
+  min-height: 3.2em;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg,
+              var(--color-accent-soft) 25%,
+              var(--color-surface-alt) 50%,
+              var(--color-accent-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+#progress:empty { display: none; }
+
+/* While the quiz is fetching (container has aria-busy="true"), choices
+   and navigation can't be used */
+.container[aria-busy="true"] :is(.choice, .navigation, .submit) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 /* ---------- Choices ---------- */
 .choice {
   display: flex;
@@ -200,8 +225,11 @@ h1 {
 
 .choice input:checked::before { transform: scale(1); }
 
-/* Correction view (only if your script adds these classes) */
-.choice.correct {
+/* Correction view (only if your script adds these classes).
+   The :has(input:checked) copies are needed because the "selected" rule
+   above is more specific and was turning a picked correct answer gray. */
+.choice.correct,
+.choice.correct:has(input:checked) {
   background: var(--quiz-success-soft);
   border-color: var(--quiz-success);
 }
@@ -211,7 +239,8 @@ h1 {
   border-color: var(--quiz-success);
 }
 
-.choice.incorrect {
+.choice.incorrect,
+.choice.incorrect:has(input:checked) {
   background: var(--quiz-danger-soft);
   border-color: var(--quiz-danger);
 }
@@ -220,6 +249,22 @@ h1 {
   background: var(--quiz-danger);
   border-color: var(--quiz-danger);
 }
+
+/* SUCCESS / ERROR states shouldn't rely on colour alone (colour-blind
+   users can't tell this green from this red), so each row also gets a
+   word-free mark at its right edge. */
+.choice.correct::after,
+.choice.incorrect::after {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.choice.correct::after   { content: "✓"; color: var(--quiz-success); }
+.choice.incorrect::after { content: "✕"; color: var(--quiz-danger); }
+
+/* Correction view is read-only, so no hover change */
+.choice.correct:hover   { background: var(--quiz-success-soft); }
+.choice.incorrect:hover { background: var(--quiz-danger-soft); }
 
 /* ---------- Question change animation ----------
    The choices fade up one after another whenever they are re-rendered. */
@@ -269,12 +314,7 @@ h1 {
   border-color: var(--color-accent);
 }
 
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
+/* (button:disabled moved to style.css so every page shares it) */
 
 .submit {
   width: 100%;
@@ -338,3 +378,6 @@ button:disabled {
 }
 
 /* Reduced motion: the base file already shortens transitions and animations */
+@media (prefers-reduced-motion: reduce) {
+  #questionText:empty { animation: none !important; }
+}

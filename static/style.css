@@ -59,6 +59,21 @@
   --color-footer-bg: #26292e;        /* charcoal */
   --color-footer-text: #cfd1d5;
 
+  /* State colours (shared by every page: forms, quiz, data features).
+     Muted to sit beside the graphite palette; all pass WCAG AA on white
+     and on their own -soft background. */
+  --color-success: #2f6f4f;
+  --color-success-soft: #e9f2ed;
+  --color-success-border: #9cc5ad;
+  --color-error: #c62828;
+  --color-error-bg: #fdecec;         /* name kept for validated_form_style.css */
+  --color-error-border: #e57373;
+  --color-info-soft: var(--color-accent-soft);
+
+  /* One focus ring used by every field on every page */
+  --focus-ring: 0 0 0 3px rgba(61, 65, 72, 0.35);
+  --focus-ring-error: 0 0 0 3px rgba(198, 40, 40, 0.3);
+
   /* Typography */
   --font-heading: "Outfit", "Garet", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: "Garet", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -67,7 +82,7 @@
   --text-base: 1rem;         /* 1rem=16px: never smaller on phones, avoids iOS input zoom */
   --text-sm: 0.875rem;
   --text-lg: 1.0625rem;
-  --text-h1: 1.625rem;
+  --text-h1: 1.75rem;        /* was 1.625rem: bigger step above h2 so the title leads */
   --text-h2: 1.375rem;
   --text-h3: 1.125rem;
   --leading-body: 1.65;
@@ -87,7 +102,7 @@
   --gutter-min: 1.25rem;     /* 20px side padding on phones */
   /* Side padding that centres content to --container-width on wide screens
      and never drops below --gutter-min on small ones. */
-  --gutter: max(var(--gutter-min), calc((100% - var(--container-width)) / 2)); /*This controls the left and right margins/padding of the website and makes it dynamic between small phone and large screens
+  --gutter: max(var(--gutter-min), calc((100% - var(--container-width)) / 2)); /* This controls the left and right margins/padding of the website and makes it dynamic between small phone and large screens */
 
   /* Radii */
   --radius-sm: 6px;
@@ -189,6 +204,20 @@ p {
   margin: 0 0 var(--space-sm);
   max-width: 75ch;/*size of letter zero in current font*/
   text-wrap: pretty;/*better text wrapping by prioritizing layout aesthetics over performance*/
+}
+
+/* Visual hierarchy: running text in the page body is muted so titles and
+   headings (near-black) clearly lead. #5c6066 is 6.3:1 on white and
+   5.4:1 on the gray page tint, so it still passes WCAG AA. */
+main p,
+main li {
+  color: var(--color-text-muted);
+}
+
+/* Consistent vertical rhythm: a heading that follows content gets more
+   space above it than below, so it groups with the text it introduces. */
+main > section > :is(h2, h3, h4):not(:first-child) {
+  margin-top: var(--space-md);
 }
 
 strong,
@@ -485,6 +514,9 @@ footer {
 footer a { color: #ffffff; text-decoration-color: var(--color-accent-border); }
 footer a:hover { color: var(--color-accent-border); }
 
+/* The default dark focus ring is invisible on the charcoal footer */
+footer :focus-visible { outline-color: #ffffff; }
+
 footer p {
   margin: 0;
   max-width: 90ch;
@@ -572,13 +604,26 @@ textarea {
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 
+/* Labels that point at a field are clickable, so show it */
+label[for] { cursor: pointer; }
+
+/* Required marker, added automatically from the field's `required`
+   attribute. The "/ ''" part hides the asterisk from screen readers
+   (they already announce "required"); the first line is the fallback. */
+label:has(+ :is(input, select, textarea):required)::after {
+  content: " *";
+  content: " *" / "";
+  color: var(--color-error);
+  font-weight: 600;
+}
+
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(61, 65, 72, 0.25);
-}/*When the user focuses on an input, dropdown, or textarea, remove the browser's default outline and replace it with a custom accent-colored border and subtle focus ring.*/
+  box-shadow: var(--focus-ring);
+}/*When the user focuses on an input, dropdown, or textarea, remove the browser's default outline and replace it with a custom accent-colored border and focus ring (now from the shared --focus-ring token, a little stronger than before).*/
 
 input[type="checkbox"],
 input[type="radio"] {
@@ -587,9 +632,42 @@ input[type="radio"] {
   accent-color: var(--color-accent);
 }
 
+/* Checkboxes and radios: a square glow around a round radio looks broken,
+   so they get a normal outline, and only for keyboard users */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus { box-shadow: none; }
+
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Disabled fields */
+input:disabled,
+select:disabled,
+textarea:disabled,
+fieldset:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border-color: var(--color-border);
+}
+
 button,
 input[type="submit"],
 input[type="button"] {
+  display: inline-flex;          /* lets a loading spinner sit beside the text */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  vertical-align: middle;        /* buttons in a row line up even with a spinner */
   width: auto;
   min-height: var(--tap-target);
   padding: 0.6rem 1.2rem;
@@ -600,23 +678,178 @@ input[type="button"] {
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color var(--transition), box-shadow var(--transition),
-              transform var(--transition);
+  transition: background-color var(--transition), border-color var(--transition),
+              box-shadow var(--transition), transform var(--transition),
+              opacity var(--transition);
 }
 
-button:hover,
-input[type="submit"]:hover,
-input[type="button"]:hover {
+/* Hover only on buttons that can actually be used */
+button:hover:not(:disabled),
+input[type="submit"]:hover:not(:disabled),
+input[type="button"]:hover:not(:disabled) {
   background: var(--color-accent-hover);
   border-color: var(--color-accent-hover);
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
 }
 
-button:active,
-input[type="submit"]:active {
+button:active:not(:disabled),
+input[type="submit"]:active:not(:disabled),
+input[type="button"]:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
+}
+
+/* Focus ring sits outside the button so it shows on dark and light buttons */
+button:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* Disabled: same rules on every page (quiz.css had its own copy) */
+button:disabled,
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   10b. Data states: loading, success, error
+   Shared by every page. Your script only switches a class or attribute:
+
+   Status message (put it near the feature it describes):
+     <p class="status" role="status" aria-live="polite"></p>
+     el.className = "status is-loading";  el.textContent = "Loading questions…";
+     el.className = "status is-success";  el.textContent = "Saved.";
+     el.className = "status is-error";    el.textContent = "Could not load.";
+     (use role="alert" instead of role="status" for errors if you prefer)
+
+   Busy button (spinner + not clickable):
+     btn.setAttribute("aria-busy", "true"); btn.disabled = true;
+
+   Busy form or region (fields dim, submit button gets a spinner):
+     form.setAttribute("aria-busy", "true");
+
+   Placeholder block while content loads:
+     <div class="skeleton"></div>
+   -------------------------------------------------------------------------- */
+.status {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  max-width: 100%;
+  margin: 0 0 var(--space-sm);
+  padding: 0.6rem 0.9rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-text);
+  background: var(--color-info-soft);
+  border: 1px solid var(--color-accent-border);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  animation: state-in 200ms ease both;
+}
+
+.status:empty { display: none; }
+
+/* Icon slot */
+.status::before {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.05rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 50%;
+}
+
+/* Loading */
+.status.is-loading::before,
+.spinner,
+button[aria-busy="true"]::before,
+form[aria-busy="true"] :is(button[type="submit"], .submit)::before {
+  content: "";
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+.spinner { display: inline-block; vertical-align: -0.15em; }
+
+/* Success */
+.status.is-success {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  border-color: var(--color-success-border);
+  border-left-color: var(--color-success);
+}
+
+.status.is-success::before {
+  content: "✓";
+  color: var(--color-on-accent);
+  background: var(--color-success);
+}
+
+/* Error */
+.status.is-error {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border-color: var(--color-error-border);
+  border-left-color: var(--color-error);
+}
+
+.status.is-error::before {
+  content: "!";
+  color: var(--color-on-accent);
+  background: var(--color-error);
+}
+
+/* Busy button: looks pressed and can't be clicked twice */
+button[aria-busy="true"],
+form[aria-busy="true"] :is(button[type="submit"], .submit) {
+  cursor: progress;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Busy form/region: fields dim while the request runs */
+form[aria-busy="true"] :is(input, select, textarea, fieldset),
+[aria-busy="true"] > .skeleton-dim {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Skeleton placeholder */
+.skeleton {
+  display: block;
+  min-height: 1.1em;
+  margin-bottom: var(--space-xs);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg,
+              var(--color-accent-soft) 25%,
+              var(--color-surface-alt) 50%,
+              var(--color-accent-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@keyframes state-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ==========================================================================
@@ -628,7 +861,7 @@ input[type="submit"]:active {
     --space-xl: 3.5rem;
     --gutter-min: 2rem;
     --text-lg: 1.125rem;
-    --text-h1: 2.125rem;
+    --text-h1: 2.25rem;
     --text-h2: 1.5rem;
     --text-h3: 1.25rem;
   }/*Only apply the CSS inside this block when the screen is at least 40em wide*/
@@ -666,7 +899,8 @@ input[type="submit"]:active {
   nav:has(a, .nav-title) {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 100;   /* was 10; the form pages bumped it to 100 themselves.
+                       Now every page uses the same value from here. */
   }
 
   .nav-title {
@@ -716,7 +950,7 @@ input[type="submit"]:active {
     --gutter-min: 2.5rem;
     --text-base: 1.0625rem;
     --text-lg: 1.25rem;
-    --text-h1: 2.5rem;
+    --text-h1: 2.75rem;
     --text-h2: 1.75rem;
     --text-h3: 1.375rem;
   }/*@media means only use these CSS rules when this condition is true*/
@@ -742,4 +976,14 @@ input[type="submit"]:active {
   button:hover,
   input[type="submit"]:hover,
   input[type="button"]:hover { transform: none; }
+
+  /* A 0.01ms infinite spin would flicker, so loaders stand still instead
+     (the "Loading…" text still tells the user what is happening) */
+  .status.is-loading::before,
+  .spinner,
+  button[aria-busy="true"]::before,
+  form[aria-busy="true"] :is(button[type="submit"], .submit)::before,
+  .skeleton {
+    animation: none !important;
+  }
 }
