@@ -3,39 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An educational purpose website as part of GIN446">
     <title>{%block title%}{%endblock%}</title>
-    <link rel="stylesheet" 
+    <link rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}" />
 {%block head%}{%endblock%}
 </head>
 <body>
+    {# Keyboard users can jump straight past the long nav to the page content #}
+    <a class="skip-link" href="#content">Skip to content</a>
+
     <header>
-    <img src="{{url_for('static', filename='GIN446-LOGO.png')}}" alt="GIN446-LOGO" width="150" height="150" />
+    <img src="{{url_for('static', filename='GIN446-LOGO.png')}}" alt="GIN446 course logo" width="150" height="150" />
     <h1>{%block headerTitle%}{%endblock%}</h1>
     <p>{%block headerParagraph%}{%endblock%}</p>
     </header>
-    <nav>
+
+    {# One nav for every page. The link for the page you are on gets
+       aria-current="page", which style.css shows as the dark pill and screen
+       readers announce as "current page". /live-quiz (from quiz_api.py) counts
+       as the Live Quiz page. #}
+    {% set current = 'live_quiz' if request.endpoint == 'quiz.quiz_page' else request.endpoint %}
+    {% macro nav_link(endpoint, text) -%}
+        <li><a href="{{ url_for(endpoint) }}"{% if current == endpoint %} aria-current="page"{% endif %}>{{ text }}</a></li>
+    {%- endmacro %}
+    <nav aria-label="Site">
     <ul class="site-nav">
-        <li><a href="{{ url_for('home') }}">Homepage</a></li>
-        <li><a href="{{ url_for('internet_history') }}">Internet History Page</a></li>
-        <li><a href="{{ url_for('internet_history_ai') }}">AI Internet History Page</a></li>
-        <li><a href="{{ url_for('web_history') }}">Web History Page</a></li>
-        <li><a href="{{ url_for('web_history_ai') }}">AI Web History Page</a></li>
-        <li><a href="{{ url_for('submit_profile') }}">Engineering Profile Form</a></li>
-        <li><a href="{{ url_for('quiz') }}">Quiz Page</a></li>
-        <li><a href="{{ url_for('submit_profile_review') }}">Enhanced Engineering Profile</a></li>
-        <li><a href="{{ url_for('live_quiz') }}">Live Quiz with Fetch</a></li>
-        <li><a href="{{ url_for('profile_validated') }}">Validated Profile</a></li>
-        <li><a href="{{ url_for('research_page') }}">Research Page</a></li>
+        {{ nav_link('home', 'Homepage') }}
+        {{ nav_link('internet_history', 'Internet History Page') }}
+        {{ nav_link('internet_history_ai', 'AI Internet History Page') }}
+        {{ nav_link('web_history', 'Web History Page') }}
+        {{ nav_link('web_history_ai', 'AI Web History Page') }}
+        {{ nav_link('submit_profile', 'Engineering Profile Form') }}
+        {{ nav_link('quiz', 'Quiz Page') }}
+        {{ nav_link('submit_profile_review', 'Enhanced Engineering Profile') }}
+        {{ nav_link('live_quiz', 'Live Quiz with Fetch') }}
+        {{ nav_link('profile_validated', 'Validated Profile') }}
+        {{ nav_link('research_page', 'Research Page') }}
     </ul>
     {%block navigation%}
     {%endblock%}
     </nav>
+
+    {# Page-level SUCCESS / ERROR message set by app.py, e.g.
+       render_template(..., page_status=("success", "Profile submitted.")) #}
+    {% if page_status %}
+    <div class="page-status">
+        <p class="status is-{{ page_status[0] }}" role="{{ 'alert' if page_status[0] == 'error' else 'status' }}">{{ page_status[1] }}</p>
+    </div>
+    {% endif %}
+
+    {# tabindex="-1" lets the skip link move keyboard focus here #}
+    <div id="content" tabindex="-1">
     {%block content%}
     {%endblock%}
+    </div>
+
     <footer>
     <p>Web Programming — built with Flask and deployed on Render.</p>
     <p>This website is created for educational purposes only, as part of the GIN446 - Web Programming course, School of Engineering, USEK. (Fall 2026-2027)</p>
     </footer>
+    
+    {# LOADING / ERROR states for the profile forms (any form with
+       data-submit-status). Lives here so no extra file is needed.
+       - LOADING: when the form is sent it gets aria-busy="true" (style.css
+         dims the fields and puts a spinner on the submit button), its
+         .status message says "Submitting…", and double submits are blocked.
+       - ERROR: if the server sent the form back with errors, focus moves to
+         the first field that needs fixing.
+       It runs on DOMContentLoaded, i.e. after deferred page scripts such as
+       profile-form.js, so it can tell when that script stopped a submit. #}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const forms = document.querySelectorAll("form[data-submit-status]");
+      if (forms.length === 0) return;   // not a form page
+
+      function setLoading(form, isLoading) {
+        const status = form.querySelector("[data-form-status]");
+        const button = form.querySelector('button[type="submit"]');
+
+        if (isLoading) {
+          form.setAttribute("aria-busy", "true");
+          if (button) {
+            button.dataset.label = button.textContent;
+            button.textContent = "Submitting…";
+          }
+          if (status) {
+            status.className = "status is-loading";
+            status.textContent = "Submitting your profile…";
+          }
+        } else {
+          form.removeAttribute("aria-busy");
+          if (button && button.dataset.label) button.textContent = button.dataset.label;
+          if (status) {
+            status.className = "status";
+            status.textContent = "";
+          }
+        }
+      }
+
+      forms.forEach(function (form) {
+        form.addEventListener("submit", function (e) {
+          // Already sending: block double submissions
+          if (form.getAttribute("aria-busy") === "true") {
+            e.preventDefault();
+            return;
+          }
+          // Another script (the preview in profile-form.js) stopped this submit
+          if (e.defaultPrevented) return;
+
+          // The browser only fires "submit" after its own checks (required,
+          // pattern...) have passed, so the data is really on its way now.
+          setLoading(form, true);
+        });
+      });
+
+      // Pressing Back after submitting can restore this page from the browser's
+      // cache with the loading state still on. Reset it.
+      window.addEventListener("pageshow", function (e) {
+        if (e.persisted) forms.forEach(function (form) { setLoading(form, false); });
+      });
+
+      // ERROR: focus the first field the server rejected
+      const firstError = document.querySelector("form .error");
+      if (firstError) {
+        let target = firstError.previousElementSibling;
+        if (target && target.tagName === "DATALIST") target = target.previousElementSibling;
+        if (target && target.tagName === "FIELDSET") {
+          target = target.querySelector("input, select, textarea");
+        }
+        if (target) target.focus();
+      }
+
+      // ERROR (forms checked by the browser: Week 4 and Week 6).
+      // Instead of the browser's pop-up bubble, every invalid field is
+      // marked in red on the page with its own message (same look as the
+      // validated form), a summary appears at the top, and focus moves to
+      // the first problem. Errors disappear as soon as the field is fixed.
+      forms.forEach(function (form) {
+        if (form.noValidate) return;   // the validated form uses server errors
+
+        let round = null;   // fields found invalid in the current check
+
+        // The field (or radio/checkbox group) the message belongs after
+        function anchorFor(field) {
+          if (field.type === "radio" || field.type === "checkbox") {
+            return field.closest("fieldset") || field;
+          }
+          if (field.list && field.nextElementSibling === field.list) return field.list;
+          return field;
+        }
+
+        function messageFor(field) {
+          const v = field.validity;
+          if (v.valueMissing) {
+            if (field.type === "radio") return "Please choose an option.";
+            if (field.type === "checkbox") return "Please tick this box to continue.";
+            if (field.tagName === "SELECT") return "Please choose an option.";
+            return "This field is required.";
+          }
+          if (v.patternMismatch && field.placeholder) {
+            return "Use this format: " + field.placeholder;
+          }
+          return field.validationMessage;   // the browser's own wording
+        }
+
+        function showError(field) {
+          const anchor = anchorFor(field);
+          const id = (field.name || field.id) + "-client-error";
+          if (document.getElementById(id)) return;   // group already marked
+          const span = document.createElement("span");
+          span.className = "error";
+          span.id = id;
+          span.dataset.client = "";
+          span.textContent = messageFor(field);
+          anchor.after(span);   // "field + .error": the CSS turns field and label red
+          const describe = anchor.tagName === "FIELDSET" ? anchor : field;
+          describe.setAttribute("aria-invalid", "true");
+          describe.setAttribute("aria-describedby", id);
+        }
+
+        function clearError(field) {
+          const span = document.getElementById((field.name || field.id) + "-client-error");
+          if (!span) return;
+          span.remove();
+          const anchor = anchorFor(field);
+          const describe = anchor.tagName === "FIELDSET" ? anchor : field;
+          describe.removeAttribute("aria-invalid");
+          describe.removeAttribute("aria-describedby");
+        }
+
+        function updateSummary() {
+          const count = form.querySelectorAll(".error[data-client]").length;
+          let summary = form.querySelector("[data-form-errors]");
+          if (count === 0) {
+            if (summary) summary.remove();
+            return;
+          }
+          if (!summary) {
+            summary = document.createElement("p");
+            summary.className = "status is-error";
+            summary.setAttribute("role", "alert");
+            summary.dataset.formErrors = "";
+            const note = form.querySelector(".form-note");
+            if (note) note.after(summary); else form.prepend(summary);
+          }
+          summary.textContent = count + (count > 1 ? " fields need" : " field needs") +
+            " your attention. Each one is marked in red below.";
+        }
+
+        // The browser fires "invalid" on each failing field when the form is
+        // submitted (and when a script calls checkValidity/reportValidity).
+        // The event doesn't bubble, so listen in the capture phase.
+        form.addEventListener("invalid", function (e) {
+          e.preventDefault();   // no pop-up bubble: the page shows the error
+          if (!round) {
+            // new check: start from a clean slate, finish once all fields reported
+            form.querySelectorAll(".error[data-client]").forEach(function (span) {
+              const owner = form.querySelector('[aria-describedby="' + span.id + '"]');
+              if (owner) {
+                owner.removeAttribute("aria-invalid");
+                owner.removeAttribute("aria-describedby");
+              }
+              span.remove();
+            });
+            round = [];
+            setTimeout(function () {
+              updateSummary();
+              const first = round[0];
+              round = null;
+              if (first) first.focus();
+            }, 0);
+          }
+          round.push(e.target);
+          showError(e.target);
+        }, true);
+
+        // Fixed? Remove that field's error straight away
+        function recheck(e) {
+          const field = e.target;
+          if (!field.willValidate) return;
+          const group = (field.type === "radio" || field.type === "checkbox") && field.name
+            ? form.querySelectorAll('[name="' + field.name + '"]')
+            : [field];
+          const ok = Array.prototype.every.call(group, function (f) { return f.validity.valid; });
+          if (ok) {
+            clearError(field);
+            updateSummary();
+          }
+        }
+        form.addEventListener("input", recheck);
+        form.addEventListener("change", recheck);
+
+        // "Clear Form" also clears the errors
+        form.addEventListener("reset", function () {
+          form.querySelectorAll(".error[data-client]").forEach(function (span) {
+            const owner = form.querySelector('[aria-describedby="' + span.id + '"]');
+            if (owner) {
+              owner.removeAttribute("aria-invalid");
+              owner.removeAttribute("aria-describedby");
+            }
+            span.remove();
+          });
+          updateSummary();
+        });
+      });
+    });
+    </script>
 </body>
 </html>

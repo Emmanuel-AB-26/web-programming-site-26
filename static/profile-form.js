@@ -3,6 +3,8 @@ const panel = document.getElementById("panel");
 const preview = document.getElementById("preview");
 const editBtn = document.getElementById("editBtn");
 const confirmBtn = document.getElementById("confirmBtn");
+const panelTitle = document.getElementById("panelTitle");
+const panelStatus = document.getElementById("panelStatus");
 
 let confirmedSubmit = false;
 
@@ -96,19 +98,32 @@ const internship_completed_preview =document.createElement("p");
 internship_completed_preview.textContent="Internship Completed?: "+internship_completed;
 preview.appendChild(internship_completed_preview);
 
+// <li> items must sit inside a <ul> (they were added straight to the <div>)
+const skills_title = document.createElement("p");
+skills_title.textContent = "Skills:";
+preview.appendChild(skills_title);
+const skills_list = document.createElement("ul");
+skills_list.className = "plain-list";
 skills.forEach(function(skill){
 const skills_preview =document.createElement("li");
 skills_preview.textContent=skill;
-preview.appendChild(skills_preview)});
+skills_list.appendChild(skills_preview)});
+preview.appendChild(skills_list);
 
 const language_preview =document.createElement("p");
 language_preview.textContent="Programming Language: "+language;
 preview.appendChild(language_preview);
 
+const software_title = document.createElement("p");
+software_title.textContent = "Engineering Software:";
+preview.appendChild(software_title);
+const software_list = document.createElement("ul");
+software_list.className = "plain-list";
 software.forEach(function(software){
 const software_preview =document.createElement("li");
 software_preview.textContent=software;
-preview.appendChild(software_preview)});
+software_list.appendChild(software_preview)});
+preview.appendChild(software_list);
 
 const project_title_preview =document.createElement("p");
 project_title_preview.textContent="Project Title: "+project_title;
@@ -144,14 +159,37 @@ preview.appendChild(confirmation_preview);
 
 form.hidden=true;
 panel.hidden=false;
+// The focused Submit button just disappeared: move focus (and the view)
+// to the preview heading so keyboard and screen-reader users follow along
+panelTitle.focus();
 });
 
 editBtn.addEventListener("click", function() {
     panel.hidden = true;
     form.hidden = false;
+    document.getElementById("student_id").focus();
 });
 
 confirmBtn.addEventListener("click", function() {
     confirmedSubmit = true;
+    // LOADING state while the profile is sent to the server
+    confirmBtn.setAttribute("aria-busy", "true");
+    confirmBtn.textContent = "Submitting…";
+    editBtn.disabled = true;
+    panelStatus.className = "status is-loading";
+    panelStatus.textContent = "Submitting your profile…";
     form.requestSubmit();
 });
+
+// Back button after submitting can restore this page with the loading state
+// still on: put the preview back to normal
+window.addEventListener("pageshow", function (e) {
+    if (!e.persisted) return;
+    confirmedSubmit = false;
+    confirmBtn.removeAttribute("aria-busy");
+    confirmBtn.textContent = "Confirm and Submit";
+    editBtn.disabled = false;
+    panelStatus.className = "status";
+    panelStatus.textContent = "Check your details below, then confirm to send them.";
+});
+

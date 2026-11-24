@@ -24,7 +24,7 @@ body {
 
 /* ---------- Card ---------- */
 .container {
-  width: 100%;
+  width: calc(100% - 2 * var(--gutter-min));   /* was 100%: card touched the screen edges on phones */
   max-width: 44rem;
   margin: var(--space-md) auto;
   padding: var(--space-md);
@@ -35,11 +35,24 @@ body {
   box-shadow: var(--shadow-sm), 0 12px 32px rgba(15, 17, 19, 0.07);
 }
 
-h1 {
+/* Scoped to the card: an unscoped `h1` rule also restyled the page header's
+   title (centred, with a border) once the quiz pages started using it. */
+.container > h1 {
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
   text-align: center;
   border-bottom: 1px solid var(--color-border);
+}
+
+/* The card's two panels (#quizPanel, #resultsPanel) are <section>s, and
+   style.css turns every `main > section` into a bordered card. That gave
+   a card inside a card. Here they are flattened back into the one card. */
+.container > section {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* ---------- Progress ---------- */
@@ -327,13 +340,26 @@ h1 {
 /* ---------- Results ---------- */
 #resultsPanel {
   display: none;
-  margin-top: var(--space-lg);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-border);
+  /* The results replace the quiz (never shown together), so no gap or
+     divider above them */
+  margin-top: 0;
   animation: quiz-reveal 300ms ease both;
 }
 
 #resultsPanel h2 { color: var(--color-accent-hover); }
+
+/* SUCCESS / ERROR state of the result: quiz.js adds .status plus
+   .is-success (50% or more) or .is-error (below 50%) to the message */
+#performanceText.status { font-size: var(--text-base); font-weight: 600; }
+
+#scoreText,
+#percentageText {
+  margin-bottom: var(--space-xs);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-heading);
+}
 
 #correction {
   white-space: pre-wrap;

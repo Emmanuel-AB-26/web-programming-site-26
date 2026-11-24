@@ -3,13 +3,16 @@ Profile') }} — Profile{% endblock %} {# PROVIDED BY THE INSTRUCTOR — do not
 edit. Shows the Engineering Student Profile built from the submitted form.
 Extends base.html, so it appears in the student's own design (their style.css).
 Reads the exact field `name` values from the profile form; `skills` and
-`software` arrive as lists. #} {% block head %}
+`software` arrive as lists. #}{% block headerTitle %}Engineering Student Profile{% endblock %}
+{% block head %}
 <style>
   /* Small, profile-specific touches. The rest comes from your own style.css. */
   .profile { max-width: 860px; }
   .profile-header { border-top: 6px solid {{ data.get('project_color', '#336699') }};
                     padding-top: 1rem; margin-bottom: 1.5rem; }
-  .profile-title { color: {{ data.get('project_color', '#336699') }}; margin: .25rem 0 .5rem; }
+    /* Text stays dark so it always meets 4.5:1 contrast; the chosen colour
+     is only used for decorative borders, never for text. */
+  .profile-title { color: var(--color-heading); margin: .25rem 0 .5rem; }
   .profile-contact { font-size: .95rem; }
   .profile-contact span { margin-right: 1rem; white-space: nowrap; }
   .profile section { margin-bottom: 1.6rem; }
@@ -26,27 +29,28 @@ Reads the exact field `name` values from the profile form; `skills` and
             background: {{ data.get('project_color', '#336699') }}; }
 </style>
 {% endblock %} {% block content %}
+<main>
 <article class="profile">
   <header class="profile-header">
     <h1>{{ data.get('fullname') }}</h1>
     {% if data.get('major') %}
     <p class="profile-title">{{ data.get('major') | title }} Engineering</p>
     {% endif %}
-    <p class="profile-contact" style="grid-row: 3; margin-top: 0.375rem;">
-      {% if data.get('student_id') %}<span>🎓 {{ data.get('student_id') }}</span
+        <p class="profile-contact" style="grid-row: 3; margin-top: 0.375rem;">
+      {% if data.get('student_id') %}<span><span aria-hidden="true">🎓</span><span class="visually-hidden">Student ID:</span> {{ data.get('student_id') }}</span
       >{% endif %} {% if data.get('email') %}<span
-        >✉ {{ data.get('email') }}</span
+        ><span aria-hidden="true">✉</span><span class="visually-hidden">Email:</span> {{ data.get('email') }}</span
       >{% endif %} {% if data.get('phone') %}<span
-        >☎ {{ data.get('phone') }}</span
+        ><span aria-hidden="true">☎</span><span class="visually-hidden">Phone:</span> {{ data.get('phone') }}</span
       >{% endif %} {% if data.get('birthdate') %}<span
-        >🎂 {{ data.get('birthdate') }}</span
+        ><span aria-hidden="true">🎂</span><span class="visually-hidden">Date of birth:</span> {{ data.get('birthdate') }}</span
       >{% endif %}
     </p>
     <p class="profile-contact" style="grid-row: 4; margin-top: 0.375rem;">
       {% if data.get('portfolio') %}<span
-        >🐙 <a href="{{ data.get('portfolio') }}">GitHub</a></span
+        ><span aria-hidden="true">🐙</span> <a href="{{ data.get('portfolio') }}">GitHub</a></span
       >{% endif %} {% if data.get('gin446') %}<span
-        >🔗 <a href="{{ data.get('gin446') }}">GIN446 site</a></span
+        ><span aria-hidden="true">🔗</span> <a href="{{ data.get('gin446') }}">GIN446 site</a></span
       >{% endif %}
     </p>
   </header>
@@ -135,4 +139,5 @@ Reads the exact field `name` values from the profile form; `skills` and
   </p>
   {% endif %}
 </article>
+</main>
 {% endblock %}

@@ -5,6 +5,49 @@
 let total = 0;// how many questions (from the server) 
 const cache = {};     
 
+// ======================================================
+// LOADING / ERROR STATES (Week 12)
+// ======================================================
+const quizEl = document.getElementById("quiz");
+const loadingEl = document.getElementById("loading");
+const errorEl = document.getElementById("error");
+const errorTextEl = document.getElementById("errorText");
+const retryBtn = document.getElementById("retryBtn");
+let retryAction = null;     // what "Try again" should re-run
+let loadingTimer = null;
+
+// LOADING: mark the quiz busy (quiz.css dims the controls). The "Loading…"
+// message only appears if the request takes longer than 150ms, so cached
+// questions don't make it flash on every click.
+function setBusy(isBusy) {
+  clearTimeout(loadingTimer);
+  if (isBusy) {
+    quizEl.setAttribute("aria-busy", "true");
+    loadingTimer = setTimeout(function () { loadingEl.hidden = false; }, 150);
+  } else {
+    quizEl.removeAttribute("aria-busy");
+    loadingEl.hidden = true;
+  }
+}
+
+// ERROR: show a clear message and a "Try again" button that re-runs
+// whatever failed
+function showError(message, retry) {
+  errorTextEl.textContent = message;
+  retryAction = retry;
+  errorEl.hidden = false;
+}
+
+function clearError() {
+  errorEl.hidden = true;
+  errorTextEl.textContent = "";
+}
+
+retryBtn.addEventListener("click", function () {
+  clearError();
+  if (retryAction) retryAction();
+});
+
 
 async function getQuestion(i) {
   if (cache[i]) return cache[i];
@@ -138,22 +181,42 @@ let correction = "";
 // SUBMIT QUIZ
 // ======================================================
 async function submitQuiz() {
-  const score = await calculateScore();
-  const percentage = calculatePercentage(score);
-  const message = getPerformanceMessage(percentage);
-  const correction = await buildCorrection();
-  showResults(score, percentage, message, correction);
+  const submitBtn = document.getElementById("submitBtn");
+  // LOADING: unanswered questions may still need fetching for the correction
+  clearError();
+  submitBtn.setAttribute("aria-busy", "true");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Checking answers…";
+  try {
+    const score = await calculateScore();
+    const percentage = calculatePercentage(score);
+    const message = getPerformanceMessage(percentage);
+    const correction = await buildCorrection();
+    showResults(score, percentage, message, correction);
+  } catch (err) {
+    console.error(err);
+    showError("Could not check your answers. Check your connection and try again.", submitQuiz);
+  } finally {
+    submitBtn.removeAttribute("aria-busy");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Quiz";
+  }
 }
 
 
+let renderCount = 0;   // lets a slow, older request be ignored
+
 async function renderQuestion() {
-  const error=document.getElementById('error');
-  const loading=document.getElementById('loading');
-  error.hidden = true;
-  loading.hidden = false;
+  const thisRender = ++renderCount;
+  const focusedBtn = document.activeElement;
+  clearError();
+  setBusy(true);
 
   try {
     const q = await getQuestion(currentQuestion);
+    // The user clicked again while this was loading: a newer render wins
+    if (thisRender !== renderCount) return;
+    document.getElementById("questionText").hidden = false;
     // QUESTION NUMBER
     document.getElementById("progress").textContent =
       `Question ${currentQuestion + 1} of ${total}`;
@@ -202,12 +265,28 @@ async function renderQuestion() {
     document.getElementById("lastBtn").disabled =
       currentQuestion === total - 1;
 
+    document.getElementById("submitBtn").disabled = false;
+
+    // If the button the user pressed just became disabled (e.g. "Last"),
+    // keep keyboard focus on the page by moving it to the new question
+    if (focusedBtn && focusedBtn.tagName === "BUTTON" && focusedBtn.disabled) {
+      document.getElementById("questionText").focus();
+    }
+
   } catch (err) {
-    error.hidden = false;
-    error.textContent = "An error has occurred.";
+    if (thisRender !== renderCount) return;
     console.error(err);
+    // Don't leave the previous question's choices clickable: an answer
+    // would be saved against the question that failed to load
+    document.getElementById("progress").textContent =
+      `Question ${currentQuestion + 1} of ${total}`;
+    document.getElementById("questionText").textContent = "";
+    document.getElementById("questionText").hidden = true;   // no endless skeleton
+    document.getElementById("choices").innerHTML = "";
+    showError("Could not load question " + (currentQuestion + 1) +
+              ". Check your connection and try again.", renderQuestion);
   } finally {
-    loading.hidden = true;
+    if (thisRender === renderCount) setBusy(false);
   }
 }
 
@@ -222,14 +301,22 @@ function showResults(score, percentage, message, correction) {
     `Score: ${score} / ${total}`;
   document.getElementById("percentageText").textContent =
     `Percentage: ${percentage}%`;
-  document.getElementById("performanceText").textContent = message;
+  // SUCCESS / ERROR state: green for a pass (50% or more), red below that
+  const performance = document.getElementById("performanceText");
+  performance.className = "status " + (percentage >= 50 ? "is-success" : "is-error");
+  performance.textContent = message;
+
   document.getElementById("correction").textContent = correction;
+
+  // The quiz panel just disappeared: move focus to the results heading
+  document.getElementById("resultsTitle").focus();
 }
 
 // ======================================================
 // START APPLICATION
 // ======================================================
 async function init() {
+  setBusy(true);
   try {
     const response = await fetch("/api/questions/count");
 
@@ -240,16 +327,23 @@ async function init() {
     const data = await response.json();
     total = data.count;
 
+    if (total === 0) {
+      setBusy(false);
+      document.getElementById("questionText").hidden = true;
+      showError("No questions are available yet. Please check back later.", init);
+      return;
+    }
+
     userAnswers.length = total;
 
     await renderQuestion();
   } catch (error) {
-    const loading = document.getElementById("loading");
-    const errorElement = document.getElementById("error");
-
-    loading.hidden = true;
-    errorElement.hidden = false;
-    errorElement.textContent = "Could not load the quiz.";
+    setBusy(false);
+    document.getElementById("questionText").hidden = true;
+    showError("Could not load the quiz. Check your connection and try again.", function () {
+      document.getElementById("questionText").hidden = false;   // skeleton again
+      init();
+    });
     console.error("Could not initialize the quiz:", error);
   }
 }

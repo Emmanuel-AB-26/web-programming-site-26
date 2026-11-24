@@ -721,3 +721,175 @@ main {
 [hidden] {
     display: none !important;
 }
+/* ==========================================================================
+   Week 12: form page structure
+   ========================================================================== */
+
+/* Each skills checkbox sits on its own row (replaces the <br> tags) */
+form .option + .option { margin-top: 0.15rem; }
+
+/* Required note at the top of the form */
+form > .form-note { margin-bottom: var(--space-md); }
+
+/* Loading message sits just above the buttons */
+form > .status[data-form-status] { margin-top: var(--space-md); }
+
+/* Week 6 preview panel: same width as the form, buttons in a row */
+main > #panel {
+    max-width: 900px;
+    margin-inline: auto;
+    box-shadow: var(--shadow-md);   /* not the decorative "network nodes" (section 24) */
+}
+
+main > #panel::before,
+main > #panel::after { display: none; }   /* nor the diagonal lines (section 23) */
+
+#preview p { margin-bottom: var(--space-xs); }
+
+#preview ul { margin: 0 0 var(--space-sm); padding-left: 1.25rem; list-style: disc; }
+
+.panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+}
+
+@media (max-width: 39.99em) {
+    .panel-actions button { width: 100%; }
+}
+
+
+/* ==========================================================================
+   Week 12: error highlighting (same as validated_form_style.css section 27)
+   The script at the bottom of base.html puts <span class="error"> right
+   after each field the browser finds invalid, instead of the pop-up bubble.
+   Colours come from the --color-error tokens in style.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   27.1 Error message
+   -------------------------------------------------------------------------- */
+
+form .error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+
+    max-width: 700px;
+    margin: calc(var(--space-xs) * -1) 0 var(--space-sm);
+    padding: 0.45rem 0.75rem;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+
+    color: var(--color-error);
+    background: var(--color-error-bg);
+
+    border: 1px solid var(--color-error-border);
+    border-left: 4px solid var(--color-error);
+    border-radius: var(--radius-md);
+
+    animation: error-shake 0.35s ease-in-out;
+}
+
+form .error::before {
+    content: "⚠";
+    content: "⚠" / "";   /* decorative: screen readers read only the message */
+    flex-shrink: 0;
+}
+
+/* Empty error spans (cleared by the script) take no space */
+form .error:empty {
+    display: none;
+}
+
+@keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-5px); }
+    40%      { transform: translateX(5px); }
+    60%      { transform: translateX(-3px); }
+    80%      { transform: translateX(3px); }
+}
+
+
+/* --------------------------------------------------------------------------
+   27.2 Highlight the field that has an error
+   (the field is directly followed by <span class="error">)
+   -------------------------------------------------------------------------- */
+
+form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):has(+ .error),
+form select:has(+ .error),
+form textarea:has(+ .error),
+form input[list]:has(+ datalist + .error) {
+    background: var(--color-error-bg);
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+}
+
+/* Keep the red ring while the field is focused */
+form input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):has(+ .error):focus,
+form select:has(+ .error):focus,
+form textarea:has(+ .error):focus,
+form input[list]:has(+ datalist + .error):focus {
+    background: #ffffff;
+    border-color: var(--color-error);
+    box-shadow: var(--focus-ring-error);
+}
+
+/* Color picker */
+form input[type="color"]:has(+ .error) {
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.18);
+}
+
+
+/* --------------------------------------------------------------------------
+   27.3 Highlight the label of the field with an error
+   -------------------------------------------------------------------------- */
+
+/* Fixed: the old selectors nested :has() inside :has(), which browsers
+   reject, so the whole rule was ignored and labels never turned red */
+form label:has(+ input + .error),
+form label:has(+ select + .error),
+form label:has(+ textarea + .error),
+form label:has(+ input[list] + datalist + .error) {
+    color: var(--color-error);
+}
+
+
+/* --------------------------------------------------------------------------
+   27.4 Highlight fieldsets (radio groups, checkbox groups, confirmation)
+   -------------------------------------------------------------------------- */
+
+form fieldset:has(+ .error) {
+    background: var(--color-error-bg);
+    border-color: var(--color-error-border);
+    border-left-color: var(--color-error);
+}
+
+form fieldset:has(+ .error) > legend {
+    color: var(--color-error);
+    border-color: var(--color-error-border);
+    border-left-color: var(--color-error);
+}
+
+form fieldset:has(+ .error) input[type="radio"],
+form fieldset:has(+ .error) input[type="checkbox"] {
+    accent-color: var(--color-error);
+}
+
+
+/* --------------------------------------------------------------------------
+   27.5 Reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    form .error {
+        animation: none;
+    }
+}
+
+/* Summary message at the top of the form */
+form > .status[data-form-errors] { margin-bottom: var(--space-md); }

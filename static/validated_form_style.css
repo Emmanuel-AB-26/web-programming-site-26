@@ -812,10 +812,12 @@ form input[type="color"]:has(+ .error) {
    27.3 Highlight the label of the field with an error
    -------------------------------------------------------------------------- */
 
-form label:has(+ input:has(+ .error)),
-form label:has(+ select:has(+ .error)),
-form label:has(+ textarea:has(+ .error)),
-form label:has(+ input[list]:has(+ datalist + .error)) {
+/* Fixed: the old selectors nested :has() inside :has(), which browsers
+   reject, so the whole rule was ignored and labels never turned red */
+form label:has(+ input + .error),
+form label:has(+ select + .error),
+form label:has(+ textarea + .error),
+form label:has(+ input[list] + datalist + .error) {
     color: var(--color-error);
 }
 
@@ -850,4 +852,41 @@ form fieldset:has(+ .error) input[type="checkbox"] {
     form .error {
         animation: none;
     }
+}
+/* ==========================================================================
+   Week 12: form page structure
+   ========================================================================== */
+
+/* Each skills checkbox sits on its own row (replaces the <br> tags) */
+form .option + .option { margin-top: 0.15rem; }
+
+/* Required note at the top of the form */
+form > .form-note { margin-bottom: var(--space-md); }
+
+/* Loading message sits just above the buttons */
+form > .status[data-form-status] { margin-top: var(--space-md); }
+
+/* Week 6 preview panel: same width as the form, buttons in a row */
+main > #panel {
+    max-width: 900px;
+    margin-inline: auto;
+    box-shadow: var(--shadow-md);   /* not the decorative "network nodes" (section 24) */
+}
+
+main > #panel::before,
+main > #panel::after { display: none; }   /* nor the diagonal lines (section 23) */
+
+#preview p { margin-bottom: var(--space-xs); }
+
+#preview ul { margin: 0 0 var(--space-sm); padding-left: 1.25rem; list-style: disc; }
+
+.panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+}
+
+@media (max-width: 39.99em) {
+    .panel-actions button { width: 100%; }
 }

@@ -225,9 +225,10 @@ function renderQuestion() {
     const radio = document.createElement("input");
     radio.type = "radio";
     radio.name = "answer";
-    radio.value = i;
-    // Restore an answer previously selected
-    // by the user.
+      radio.value = i;
+      // Explicit label/input pair (label for="choice-N")
+      radio.id = "choice-" + i;
+      label.htmlFor = radio.id;
     if (userAnswers[currentQuestion] === i) {
       radio.checked = true;
     }
@@ -244,12 +245,21 @@ function renderQuestion() {
   // --------------------------------------------------
   // NAVIGATION BUTTONS
   // --------------------------------------------------
+  // Remember which button had keyboard focus before some get disabled
+  const focusedBtn = document.activeElement;
+
   document.getElementById("firstBtn").disabled = currentQuestion === 0;
   document.getElementById("previousBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled =
     currentQuestion === questions.length - 1;
   document.getElementById("lastBtn").disabled =
     currentQuestion === questions.length - 1;
+
+  // A disabled button drops keyboard focus to the top of the page. If that
+  // just happened (e.g. "Last" pressed), move focus to the new question.
+  if (focusedBtn && focusedBtn.tagName === "BUTTON" && focusedBtn.disabled) {
+    document.getElementById("questionText").focus();
+  }
 }
 
 // ======================================================
@@ -262,11 +272,42 @@ function showResults(score, percentage, message, correction) {
     `Score: ${score} / ${questions.length}`;
   document.getElementById("percentageText").textContent =
     `Percentage: ${percentage}%`;
-  document.getElementById("performanceText").textContent = message;
+  // SUCCESS / ERROR state: green for a pass (50% or more), red below that
+  const performance = document.getElementById("performanceText");
+  performance.className = "status " + (percentage >= 50 ? "is-success" : "is-error");
+  performance.textContent = message;
+
   document.getElementById("correction").textContent = correction;
+
+  // The quiz panel (and the focused Submit button) just disappeared, so move
+  // focus to the results heading for keyboard and screen-reader users
+  document.getElementById("resultsTitle").focus();
 }
 
 // ======================================================
 // START APPLICATION
 // ======================================================
-renderQuestion();
+// ERROR state: if there is nothing to show, say so instead of leaving the
+// loading skeleton on screen, and turn the buttons off.
+function showQuizError(text) {
+  const status = document.getElementById("quizStatus");
+  status.className = "status is-error";
+  status.setAttribute("role", "alert");
+  status.textContent = text;
+  document.getElementById("questionText").hidden = true;
+  document
+    .querySelectorAll("#quizPanel button")
+    .forEach(function (btn) { btn.disabled = true; });
+}
+
+if (questions.length === 0) {
+  showQuizError("No questions are available yet. Please check back later.");
+} else {
+  try {
+    renderQuestion();
+  } catch (err) {
+    console.error(err);
+    showQuizError("The quiz could not be displayed. Please refresh the page.");
+  }
+}
+
